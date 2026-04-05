@@ -12,7 +12,7 @@ wheels = [
 ]
 
 [[package]]
-name = "blog"
+name = "blog-bythewood-me"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
