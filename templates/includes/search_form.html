@@ -1,11 +1,6 @@
-<form method="GET" action="/search/" class="position-relative">
-  <div class="form-floating">
-    <input type="text" class="form-control bg-light" id="id_search" name="q" value="{{ q }}" autofocus>
-    <label for="id_search">Search posts</label>
-  </div>
-  <button class="btn btn-success position-absolute top-0 end-0 py-3 px-4 rounded-0 rounded-end border-transparent" type="submit" aria-label="Search">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-    </svg>
-  </button>
+<form method="GET" action="/search/" class="position-relative search-form">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="search-icon" viewBox="0 0 16 16">
+    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+  </svg>
+  <input type="text" class="form-control search-input" id="id_search" name="q" value="{{ q }}" placeholder="search posts..." autofocus>
 </form>

@@ -26,10 +26,8 @@ Currently filtered by year {{ active_year }}.
 
 {% block extra_breadcrumbs %}
 {% if active_tag %}
-<li class="breadcrumb-item"><a href="{{ url_for('blog_index') }}">Blog</a></li>
 <li class="breadcrumb-item active">{{ active_tag.name|title }}</li>
 {% elif active_year %}
-<li class="breadcrumb-item"><a href="{{ url_for('blog_index') }}">Blog</a></li>
 <li class="breadcrumb-item active">{{ active_year }}</li>
 {% else %}
 <li class="breadcrumb-item active">{{ page.title }}</li>
@@ -43,9 +41,9 @@ Currently filtered by year {{ active_year }}.
     <div class="col-sm-6">
       <h1 class="mb-3 fw-bolder">
         {% if active_tag %}
-        <div class="text-muted fs-5">{{ active_tag.name|title }}</div>
+        <div class="section-label fs-6 mb-1">{{ active_tag.name|title }}</div>
         {% elif active_year %}
-        <div class="text-muted fs-5">{{ active_year }}</div>
+        <div class="section-label fs-6 mb-1">{{ active_year }}</div>
         {% endif %}
         {{ page.title }}
       </h1>
@@ -56,6 +54,28 @@ Currently filtered by year {{ active_year }}.
   </div>
 </div>
 
+<div class="container mt-3">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <span class="filter-label">tags</span>
+    {% for tag in tags %}
+      <a href="{{ url_for('blog_tag', tag=tag.slug) }}" class="btn btn-sm rounded-pill {% if active_tag and active_tag.slug == tag.slug %}btn-filter-active{% else %}btn-filter{% endif %}">
+        {{ tag.name|title }}
+      </a>
+    {% endfor %}
+    <span class="filter-divider"></span>
+    <span class="filter-label">year</span>
+    {% for year in years %}
+      <a href="{{ url_for('blog_year', year=year) }}" class="btn btn-sm rounded-pill {% if active_year == year %}btn-filter-active{% else %}btn-filter{% endif %}">
+        {{ year }}
+      </a>
+    {% endfor %}
+    {% if active_tag or active_year %}
+    <span class="filter-divider"></span>
+    <a href="{{ url_for('blog_index') }}" class="btn btn-sm rounded-pill btn-filter-clear">clear</a>
+    {% endif %}
+  </div>
+</div>
+
 {% set blog_post = blog_posts[0] if blog_posts else None %}
 {% if blog_post %}
 {% include "includes/blog_post_latest.html" %}
@@ -63,53 +83,33 @@ Currently filtered by year {{ active_year }}.
 
 <div class="container mt-5">
   <div class="row">
-    <div class="col-8">
-      <div class="row">
-        {% for blog_post in blog_posts %}
-        {% if not loop.first %}
-        <div class="col-sm-12 col-md-6 mb-5">
-          {% include "includes/blog_post_card.html" %}
-        </div>
-        {% endif %}
-        {% endfor %}
-      </div>
-      {% if extra_posts %}
-      <div class="row mb-3">
-        <div class="col">
-          <div class="alert alert-info d-flex align-items-center row g-1 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill col-2 col-md-1" viewBox="0 0 16 16">
-              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
-            </svg>
-            <div class="col-10 col-md-11">I don't have any more posts with this filter at
-              the moment but here are some other posts you might like!</div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        {% for blog_post in extra_posts %}
-        <div class="col-12 col-md-6 mb-5">
-          {% include "includes/blog_post_card.html" %}
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %}
+    {% for blog_post in blog_posts %}
+    {% if not loop.first %}
+    <div class="col-sm-12 col-md-6 col-lg-4 mb-5">
+      {% include "includes/blog_post_card.html" %}
     </div>
-    <div class="col-4">
-      <div class="list-group">
-        <div class="list-group-item bg-secondary text-white fw-bold">Tags</div>
-        {% for tag in tags %}
-          <a href="{{ url_for('blog_tag', tag=tag.slug) }}" class="list-group-item {% if active_tag and active_tag.slug == tag.slug %}active{% endif %}">{{ tag.name|title }}</a>
-        {% endfor %}
-        <a href="{{ url_for('blog_index') }}" class="list-group-item bg-light">View all</a>
-      </div>
-      <div class="list-group mt-3">
-        <div class="list-group-item bg-secondary text-white fw-bold">Years</div>
-        {% for year in years %}
-          <a href="{{ url_for('blog_year', year=year) }}" class="list-group-item {% if active_year == year %}active{% endif %}">{{ year }}</a>
-        {% endfor %}
-        <a href="{{ url_for('blog_index') }}" class="list-group-item bg-light">View all</a>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% if extra_posts %}
+  <div class="row mb-3">
+    <div class="col">
+      <div class="alert alert-info d-flex align-items-center row g-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill col-2 col-md-1" viewBox="0 0 16 16">
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+        </svg>
+        <div class="col-10 col-md-11">I don't have any more posts with this filter at
+          the moment but here are some other posts you might like!</div>
       </div>
     </div>
   </div>
+  <div class="row">
+    {% for blog_post in extra_posts %}
+    <div class="col-12 col-md-6 col-lg-4 mb-5">
+      {% include "includes/blog_post_card.html" %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

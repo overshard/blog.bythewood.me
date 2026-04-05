@@ -2,56 +2,141 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
 }
+
+// ── Logo ──
 
 .logo {
   content: "";
   display: block;
   background-image: linear-gradient(
-    to right,
-    rgb(14, 63, 244) 0px,
-    rgb(132, 43, 255) 100%
+    135deg,
+    rgb(14, 63, 180) 0%,
+    rgb(107, 158, 120) 100%
   );
   width: 36px;
   height: 36px;
   margin-top: auto;
   margin-bottom: auto;
-  transition: transform 0.2s ease-in-out;
+  border-radius: 3px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    transform: rotate(15deg) scale(1.1);
+    transform: rotate(12deg) scale(1.08);
+    box-shadow: 0 0 14px rgba(107, 158, 120, 0.3);
   }
 }
 
-footer {
-  padding-top: 6rem;
+// ── Navbar ──
 
-  .links {
-    padding-top: 6rem;
-  }
-}
+.navbar {
+  border-bottom: 1px solid rgba(107, 158, 120, 0.06);
 
-.footer-bar {
-  background: #000;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 1rem 0;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 0.85rem;
-  letter-spacing: 0.02em;
+  .nav-link {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    text-transform: lowercase;
+    position: relative;
 
-  small {
-    color: rgba(255, 255, 255, 0.35);
-  }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 1px;
+      background: #6b9e78;
+      box-shadow: 0 0 6px rgba(107, 158, 120, 0.3);
+      transform: scaleX(0);
+      transition: transform 250ms ease;
+    }
 
-  &-link {
-    color: rgba(255, 255, 255, 0.35);
-    transition: color 0.2s ease-in-out;
-
-    &:hover {
-      color: #fff;
+    &:hover::after,
+    &.active::after {
+      transform: scaleX(1);
     }
   }
 }
+
+// ── Breadcrumb bar ──
+
+.breadcrumb-bar {
+  background: rgba(107, 158, 120, 0.02);
+  border-bottom: 1px solid rgba(107, 158, 120, 0.04);
+}
+
+// ── Footer ──
+
+footer {
+  padding-top: 4rem;
+  position: relative;
+
+  .links {
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    position: relative;
+    z-index: 20;
+  }
+
+  .h5 {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(201, 168, 76, 0.55);
+    font-weight: 600;
+  }
+
+  p {
+    color: rgba(221, 215, 205, 0.5);
+    font-size: 0.88rem;
+    line-height: 1.75;
+
+    a {
+      color: rgba(221, 215, 205, 0.75);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 200ms ease;
+
+      &:hover {
+        color: #ddd7cd;
+      }
+    }
+  }
+}
+
+// ── Footer bar (sosumi) ──
+
+.footer-bar {
+  background: #070605;
+  border-top: 1px solid rgba(107, 158, 120, 0.05);
+  padding: 1rem 0;
+  color: rgba(221, 215, 205, 0.3);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  position: relative;
+  z-index: 20;
+
+  small {
+    color: rgba(221, 215, 205, 0.3);
+  }
+
+  &-link {
+    color: rgba(221, 215, 205, 0.3);
+    transition: color 200ms ease;
+
+    &:hover {
+      color: #ddd7cd;
+    }
+  }
+}
+
+// ── Footer animated plane ──
 
 .footer-plane {
   position: relative;
@@ -68,8 +153,8 @@ footer {
     z-index: 11;
     background: radial-gradient(
       ellipse at 50% 50%,
-      rgba(10, 14, 15, 0) 0,
-      rgb(0, 0, 0) 80%
+      rgba(9, 8, 6, 0) 0,
+      rgb(9, 8, 6) 80%
     );
   }
 
@@ -89,13 +174,166 @@ footer {
     height: 200%;
     background-image: linear-gradient(
         90deg,
-        hsla(0, 0%, 50%, 0.5) 1px,
+        rgba(107, 158, 120, 0.18) 1px,
         transparent 0
       ),
-      linear-gradient(180deg, hsla(0, 0%, 50%, 0.5) 1px, transparent 0);
+      linear-gradient(180deg, rgba(107, 158, 120, 0.18) 1px, transparent 0);
     background-size: 40px 30px;
     background-repeat: repeat;
     transform-origin: 100% 0 0;
     animation: footer-plane-keyframes 17s linear infinite;
   }
+}
+
+// ── Section labels — terminal-prompt style with amber ──
+
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c9a84c;
+
+  &::before {
+    content: '> ';
+    opacity: 0.5;
+  }
+}
+
+// ── Card hover effects ──
+
+.card {
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+
+  &:hover {
+    border-color: rgba(107, 158, 120, 0.18);
+    box-shadow: 0 0 20px rgba(107, 158, 120, 0.04);
+  }
+}
+
+// ── Search form — terminal style ──
+
+.search-form {
+  .search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #665f56;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .search-input {
+    padding-left: 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(107, 158, 120, 0.15);
+    background: rgba(19, 18, 14, 0.6);
+    color: #ddd7cd;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+
+    &::placeholder {
+      color: #665f56;
+      font-style: normal;
+    }
+
+    &:focus {
+      border-color: rgba(107, 158, 120, 0.4);
+      box-shadow: 0 0 0 2px rgba(107, 158, 120, 0.1);
+      background: #13120e;
+    }
+  }
+}
+
+// ── Live search results ──
+
+#id_search_results .list-group-item {
+  color: #ddd7cd;
+  border-color: rgba(107, 158, 120, 0.08);
+
+  .fw-bold {
+    color: #ddd7cd;
+  }
+
+  &.active {
+    background: rgba(107, 158, 120, 0.12);
+    border-color: rgba(107, 158, 120, 0.2);
+    color: #ddd7cd;
+  }
+
+  &:hover {
+    background: rgba(107, 158, 120, 0.08);
+  }
+}
+
+// ── Blog index filter pills ──
+
+.filter-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  opacity: 0.7;
+}
+
+.filter-divider {
+  width: 1px;
+  height: 1.2rem;
+  background: rgba(221, 215, 205, 0.1);
+  margin: 0 0.25rem;
+}
+
+.btn-filter {
+  background: rgba(221, 215, 205, 0.04);
+  color: #a09890;
+  border: 1px solid rgba(221, 215, 205, 0.08);
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.4rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  transition: all 200ms ease;
+
+  &:hover {
+    background: rgba(107, 158, 120, 0.1);
+    color: #ddd7cd;
+    border-color: rgba(107, 158, 120, 0.2);
+  }
+}
+
+.btn-filter-active {
+  background: rgba(107, 158, 120, 0.15);
+  color: #7db88c;
+  border: 1px solid rgba(107, 158, 120, 0.3);
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.4rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-filter-clear {
+  background: rgba(196, 112, 85, 0.1);
+  color: #c47055;
+  border: 1px solid rgba(196, 112, 85, 0.2);
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.4rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  transition: all 200ms ease;
+
+  &:hover {
+    background: rgba(196, 112, 85, 0.2);
+    color: #d88a70;
+    border-color: rgba(196, 112, 85, 0.35);
+  }
+}
+
+// ── Vertical rule override ──
+
+.vr {
+  background-color: rgba(107, 158, 120, 0.12);
 }

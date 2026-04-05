@@ -127,6 +127,7 @@ def load_posts():
         publish_date = meta.get("publish_date", post_date)
 
         post = {
+            "filename": filename,
             "title": meta.get("title", ""),
             "slug": meta.get("slug", filename[:-3]),
             "date": post_date,
@@ -285,6 +286,21 @@ def blog_post_pdf(slug):
         pdf,
         mimetype="application/pdf",
         headers={"Content-Disposition": f'filename="{post["slug"]}.pdf"'},
+    )
+
+
+@app.route("/blog/<slug>/md/")
+def blog_post_md(slug):
+    post = POSTS_BY_SLUG.get(slug)
+    if not post or post["publish_date"] > date.today().isoformat():
+        abort(404)
+    filepath = os.path.join(CONTENT_DIR, "posts", post["filename"])
+    with open(filepath) as f:
+        content = f.read()
+    return Response(
+        content,
+        mimetype="text/markdown",
+        headers={"Content-Disposition": f'filename="{post["slug"]}.md"'},
     )
 
 

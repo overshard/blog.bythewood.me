@@ -3,6 +3,7 @@
   height: auto;
   max-width: 800px;
   border-radius: 0.25rem;
+  border: 1px solid rgba(107, 158, 120, 0.08);
 }
 
 .CodeMirror-line {
@@ -14,9 +15,9 @@
 }
 
 .CodeMirror-linenumber.CodeMirror-gutter-elt {
-  color: #8d8d8d;
+  color: #4a443c;
 }
 
 .cm-s-material-darker .cm-comment {
-  color: #8d8d8d;
+  color: #665f56;
 }

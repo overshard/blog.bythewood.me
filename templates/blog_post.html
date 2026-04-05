@@ -13,12 +13,12 @@
       <div class="d-flex justify-content-between align-items-center">
         <div class="mb-2">
           {% for tag in post.tags %}
-          <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-secondary btn-sm rounded-pill py-0">
+          <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-tag btn-sm rounded-pill">
             {{ tag|title }}
           </a>
           {% endfor %}
         </div>
-        <div class="mb-2 d-flex align-items-center">
+        <div class="mb-2 d-flex align-items-center text-muted">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stopwatch me-2" viewBox="0 0 16 16">
             <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
             <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64a.715.715 0 0 1 .012-.013l.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354a.512.512 0 0 1-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5zM8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3z"/>
@@ -27,10 +27,15 @@
         </div>
       </div>
       <h1 class="fw-bolder">{{ post.title }}</h1>
-      <p class="h5 text-muted">{{ post.description }}</p>
+      <p class="h5 text-muted" style="font-weight: 400;">{{ post.description }}</p>
     </div>
-    <div class="d-none d-md-block col-md-4 col-lg-6 text-end">
-      <a href="{{ url_for('blog_post_pdf', slug=post.slug) }}" target="_blank" class="btn btn-link btn-sm d-print-none" aria-label="Download PDF">
+    <div class="d-none d-md-block col-md-4 col-lg-6 text-end d-print-none">
+      <a href="{{ url_for('blog_post_md', slug=post.slug) }}" target="_blank" class="btn btn-link btn-sm" aria-label="Download Markdown">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-filetype-md" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM.706 13.189v2.66H0V11.85h.806l1.14 2.596h.026l1.14-2.596h.8v3.999h-.716v-2.66h-.038l-.946 2.159h-.516l-.952-2.16H.706Zm3.919 2.66V11.85h1.459c.406 0 .741.078 1.005.234.264.157.46.382.589.68.13.297.196.655.196 1.075 0 .422-.066.784-.196 1.084a1.45 1.45 0 0 1-.595.689c-.264.158-.597.236-.999.236H4.625Zm.791-3.354v2.707h.563c.186 0 .347-.028.483-.082a.8.8 0 0 0 .334-.252c.088-.114.153-.254.196-.422a2.3 2.3 0 0 0 .068-.592c0-.3-.04-.552-.118-.753a.89.89 0 0 0-.354-.454c-.159-.102-.361-.152-.61-.152h-.562Z"/>
+        </svg>
+      </a>
+      <a href="{{ url_for('blog_post_pdf', slug=post.slug) }}" target="_blank" class="btn btn-link btn-sm" aria-label="Download PDF">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-filetype-pdf" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z"/>
         </svg>
@@ -50,8 +55,8 @@
 {% endif %}
 
 <div class="container">
-  <div class="border-bottom border-3 py-3">
-    <div class="text-muted small mb-2">Author</div>
+  <div class="py-3" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+    <div class="section-label mb-2">Author</div>
     <div class="d-flex justify-content-between">
       <div class="d-flex align-items-center">
         <img class="rounded-circle me-3"
@@ -74,7 +79,7 @@
 <div class="container mt-5">
   <article>
     {{ post.body_html|safe }}
-    <hr class="mt-5" style="height: 3px; max-width: 600px; margin-left: auto; margin-right: auto;">
+    <hr class="mt-5" style="height: 2px; max-width: 600px; margin-left: auto; margin-right: auto; border-color: rgba(255,255,255,0.06);">
   </article>
 </div>
 
@@ -82,10 +87,10 @@
 <div class="container mt-5 d-print-none">
   <div class="row">
     <div class="col">
-      <div class="text-muted">
+      <div class="section-label mb-1">
         Related posts
       </div>
-      <p>Some posts in similar tags to this one.</p>
+      <p class="text-muted">Some posts in similar tags to this one.</p>
     </div>
   </div>
   <div class="row d-flex flex-nowrap overflow-auto w-100">

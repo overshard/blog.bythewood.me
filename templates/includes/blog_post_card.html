@@ -1,27 +1,27 @@
-<div class="card rounded-0 border-0 border-bottom h-100">
-  <div class="mb-3">
+<div class="card rounded border-0 h-100 bg-surface">
+  <div class="mb-3 pt-3 px-3">
     {% for tag in blog_post.tags %}
-      <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-light btn-sm rounded-pill fw-bold py-0">
+      <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-tag btn-sm rounded-pill">
         {{ tag|title }}
       </a>
     {% endfor %}
   </div>
   {% if blog_post.cover_image %}
   <a href="{{ url_for('blog_post', slug=blog_post.slug) }}">
-    <img src="{{ url_for('content_images', filename=blog_post.cover_image) }}" class="card-img-top rounded img-fluid" alt="{{ blog_post.title }}">
+    <img src="{{ url_for('content_images', filename=blog_post.cover_image) }}" class="card-img-top rounded img-fluid px-3" alt="{{ blog_post.title }}">
   </a>
   {% endif %}
   <div class="card-body d-flex flex-column">
-    <a href="{{ url_for('blog_post', slug=blog_post.slug) }}" class="text-decoration-none text-dark">
-      <div class="h5 card-title">{{ blog_post.title }}</div>
+    <a href="{{ url_for('blog_post', slug=blog_post.slug) }}" class="text-decoration-none" style="color: #f0f0f5;">
+      <div class="h5 card-title fw-bold">{{ blog_post.title }}</div>
     </a>
-    <div class="card-text text-muted flex-grow-1">{{ blog_post.description }}</div>
+    <div class="card-text flex-grow-1" style="color: #a09890;">{{ blog_post.description }}</div>
     <div class="row g-0 mt-3">
       <div class="col-12 col-xl-8 d-flex align-items-center">
         <img class="rounded-circle me-2" src="{{ url_for('content_images', filename='avatar.webp') }}" alt="Isaac Bythewood" width="25" height="25">
-        <strong class="me-2">Isaac Bythewood</strong>
+        <strong class="me-2" style="font-size: 0.9em;">Isaac Bythewood</strong>
       </div>
-      <div class="col-12 col-xl-4 d-flex justify-content-start justify-content-xl-end text-muted">
+      <div class="col-12 col-xl-4 d-flex justify-content-start justify-content-xl-end text-muted" style="font-size: 0.85em;">
         {{ blog_post.date }}
       </div>
     </div>
