@@ -1,14 +1,11 @@
 # Django + Webpack Makefile
-# v. 2022.07.13
 
 
 .PHONY: run runserver webpack check clean push pull update
 .DEFAULT: run
 
 
-SERVER_URL = $(shell git config --get remote.origin.url | cut -d ':' -f 1)
-INSTALLED_PYTHON_VERSIONS = $(shell ls ~/.pyenv/versions/)
-REQUIRED_PYTHON_VERSION = $(shell cat Pipfile | grep "^python_version " | cut -d '"' -f 2)
+SERVER_URL = $(shell git config --get remote.server.url | cut -d ':' -f 1)
 PROJECT_NAME = $(shell basename $(PWD))
 
 
@@ -17,7 +14,7 @@ run: check install
 	${MAKE} -j2 runserver webpack
 
 runserver:
-	pipenv run python manage.py runserver
+	uv run python manage.py runserver 0.0.0.0:8000
 
 webpack:
 	npx nodemon --watch webpack.config.js --exec \
@@ -26,22 +23,13 @@ webpack:
 
 check:
 	@echo "check --------------------------------------------------------------"
-	@if ! which pipenv > /dev/null; then\
-		echo "> pipenv not found in PATH, please make sure it's installed along with pyenv";\
-		echo "> see https://github.com/pyenv/pyenv and install the latest version of python";\
-		echo "> if you have docker installed you can use https://github.com/overshard/dockerfiles/blob/master/webdev/Dockerfile";\
+	@if ! which uv > /dev/null; then\
+		echo "> uv not found in PATH, please install it: https://docs.astral.sh/uv/";\
 		exit 1;\
 	fi
 	@if ! which yarn > /dev/null; then\
 		echo "> yarn not found in PATH, please make sure it's installed along with node";\
-		echo "> see https://github.com/nvm-sh/nvm and install the latest version of node";\
-		echo "> if you have docker installed you can use https://github.com/overshard/dockerfiles/blob/master/webdev/Dockerfile";\
 		exit 1;\
-	fi
-	@if ! echo $(INSTALLED_PYTHON_VERSIONS) | grep -q $(REQUIRED_PYTHON_VERSION); then\
-		echo "> python $(REQUIRED_PYTHON_VERSION) not found in ~/.pyenv/versions";\
-		echo "> trying to install it for you via pyenv";\
-		pyenv install $(REQUIRED_PYTHON_VERSION);\
 	fi
 	@echo "> all checks passed"
 
@@ -54,16 +42,15 @@ node_modules/touchfile: package.json
 	touch $@
 	@echo "> all node deps installed"
 
-.venv/touchfile: Pipfile
+.venv/touchfile: pyproject.toml
 	@echo "install python deps ------------------------------------------------"
-	mkdir -p .venv
-	pipenv install --dev
+	uv sync
 	touch $@
 	@echo "> all python deps installed"
 
 db.sqlite3:
 	@echo "create database ----------------------------------------------------"
-	pipenv run python manage.py migrate
+	uv run python manage.py migrate
 	@echo "> database created"
 
 
@@ -80,7 +67,7 @@ pull:
 
 update: install
 	@echo "update -------------------------------------------------------------"
-	pipenv update
+	uv lock --upgrade
 	yarn upgrade
 	@echo "> all deps updated"
 

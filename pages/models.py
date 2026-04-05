@@ -9,11 +9,11 @@ from django.shortcuts import redirect
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from taggit.models import Tag, TaggedItemBase
-from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
-from wagtail.core.blocks import ChoiceBlock, RichTextBlock, StructBlock, TextBlock
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page
+from wagtail.blocks import ChoiceBlock, RichTextBlock, StructBlock, TextBlock
+from wagtail.fields import StreamField
+from wagtail.models import Page
 from wagtail.embeds.blocks import EmbedBlock
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index

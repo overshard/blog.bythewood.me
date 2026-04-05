@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
 
-    'wagtail.contrib.modeladmin',
+    'wagtail_modeladmin',
     "wagtail.contrib.routable_page",
     'wagtail.contrib.redirects',
     'wagtail.embeds',
@@ -110,7 +110,14 @@ USE_THOUSAND_SEPARATOR = False  # NOTE: If setting to true this could cause issu
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 STATICFILES_DIRS = (BASE_DIR / "blog/static",)
 STATIC_ROOT = BASE_DIR / "static"
 

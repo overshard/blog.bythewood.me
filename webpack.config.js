@@ -3,8 +3,6 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
-
 const BASE_DIR = __dirname;
 
 module.exports = {
@@ -26,23 +24,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new BrowserSyncPlugin({
-      proxy: "http://localhost:8000",
-      files: [
-        "blog/static",
-        "**/*.html",
-        // "**/*.py",  // NOTE: enabling this causes us to up the reload delay to 2000ms which is not an enjoyable experience
-      ],
-      ignore: [
-        "node_modules",
-        "migrations",
-        "media",
-      ],
-      notify: false,
-      open: false,
-      reloadDelay: 500,
-      reloadDebounce: 500,
-    }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
     }),

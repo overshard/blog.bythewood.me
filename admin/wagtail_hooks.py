@@ -1,8 +1,8 @@
 from django.templatetags.static import static
 from django.utils.html import escape, format_html
-from wagtail.contrib.modeladmin.mixins import ThumbnailMixin
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.core import hooks
+from wagtail_modeladmin.mixins import ThumbnailMixin
+from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail import hooks
 from wagtail.rich_text import LinkHandler
 
 from pages.models import BlogPostPage
