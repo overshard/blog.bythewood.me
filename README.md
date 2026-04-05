@@ -97,8 +97,8 @@ The default user is `admin` with the password `admin`.
 
 ## Backups
 
-All data is stored in `/srv/data/blog/` and your repo is stored in
-`/srv/git/blog.git/`. You can backup both of these folders and you'll have
+All data is stored in `/srv/data/blog.bythewood.me/` and your repo is stored in
+`/srv/git/blog.bythewood.me.git/`. You can backup both of these folders and you'll have
 a 100% backup of everything except changes you may have made to the `Caddyfile`
 and the `.env` file which should be easy enough to recreate but you can back
 those up too!
@@ -141,20 +141,20 @@ Server:
     ufw allow 22/tcp && ufw allow 80/tcp && ufw allow 443/tcp && ufw --force enable
     echo -e "#!/bin/sh\napk upgrade --update | sed \"s/^/[\`date\`] /\" >> /var/log/apk-autoupgrade.log" > /etc/periodic/daily/apk-autoupgrade && chmod 700 /etc/periodic/daily/apk-autoupgrade
     rc-update add docker boot && service docker start
-    mkdir -p /srv/git/blog.git && cd /srv/git/blog.git && git init --bare
+    mkdir -p /srv/git/blog.bythewood.me.git && cd /srv/git/blog.bythewood.me.git && git init --bare
 
 Local:
 
-    git clone git@github.com:overshard/blog.git && cd blog
-    git remote remove origin && git remote add origin root@blog.bythewood.me:/srv/git/blog.git
+    git clone git@github.com:overshard/blog.bythewood.me.git && cd blog.bythewood.me
+    git remote remove origin && git remote add origin root@blog.bythewood.me:/srv/git/blog.bythewood.me.git
     git push --set-upstream origin master
 
 Server:
 
-    mkdir -p /srv/docker && cd /srv/docker && git clone /srv/git/blog.git blog && cd /srv/docker/blog
+    mkdir -p /srv/docker && cd /srv/docker && git clone /srv/git/blog.bythewood.me.git blog.bythewood.me && cd /srv/docker/blog.bythewood.me
     cp samplefiles/Caddyfile.sample /etc/caddy/Caddyfile && sed -i 's/blog.example.com/blog.bythewood.me/g' /etc/caddy/Caddyfile
     cp samplefiles/env.sample .env && sed -i 's/blog.example.com/blog.bythewood.me/g' .env
-    cp samplefiles/post-receive.sample /srv/git/blog.git/hooks/post-receive
-    mkdir -p /srv/data/blog/db && chown -R 1000:1000 /srv/data/blog
+    cp samplefiles/post-receive.sample /srv/git/blog.bythewood.me.git/hooks/post-receive
+    mkdir -p /srv/data/blog.bythewood.me/db && chown -R 1000:1000 /srv/data/blog.bythewood.me
     docker-compose up --build --detach && docker-compose run web python3 manage.py migrate --noinput && docker-compose run web sqlite3 db.sqlite3 "PRAGMA journal_mode=WAL;" ".exit"
     rc-update add caddy boot && service caddy start

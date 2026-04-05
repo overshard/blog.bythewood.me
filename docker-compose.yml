@@ -1,6 +1,6 @@
 services:
   web:
-    container_name: blog
+    container_name: blog.bythewood.me
     build: .
     env_file: .env
     ports:

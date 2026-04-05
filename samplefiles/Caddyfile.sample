@@ -38,7 +38,7 @@ blog.example.com {
   handle /media/* {
     uri strip_prefix /media
     file_server {
-      root /srv/data/blog/media
+      root /srv/data/blog.bythewood.me/media
     }
   }
 

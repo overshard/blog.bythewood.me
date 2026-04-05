@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 # For easy server deploys you can create add this post-receive hook to your
-# server in a bare repo somewhere like /srv/git/blog/hooks/post-receive
-# and make a git clone in /srv/docker/blog. This script will then run on
+# server in a bare repo somewhere like /srv/git/blog.bythewood.me/hooks/post-receive
+# and make a git clone in /srv/docker/blog.bythewood.me. This script will then run on
 # pushing updates to the server to build and deploy new docker images.
 
 
@@ -10,7 +10,7 @@ while read oldrev newrev ref; do
   if [ "$ref" = "refs/heads/master" ]; then
     unset GIT_DIR  # unset GIT_DIR so that git pull works correctly
     START_TIME=`date +%s`
-    cd /srv/docker/blog
+    cd /srv/docker/blog.bythewood.me
     git pull
     docker-compose up --build --detach
     docker-compose run web python3 manage.py migrate --noinput
