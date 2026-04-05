@@ -5,6 +5,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/mode/htmlmixed/htmlmixed.js";
 import "codemirror/mode/css/css.js";
 import "codemirror/mode/shell/shell.js";
+import "codemirror/mode/toml/toml.js";
 
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material-darker.css";
