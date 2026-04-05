@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+
+{% block extra_head %}
+{% include "includes/social.html" %}
+{% endblock %}
+
+
+{% block main %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col">
+      <h1>{{ page.title }}</h1>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      {% include 'includes/search_form.html' %}
+    </div>
+  </div>
+</div>
+<div class="container mt-5">
+  <div class="row">
+    {% if results %}
+    {% for blog_post in results %}
+    <div class="col-12 col-sm-6 col-md-4 mb-5">
+      {% include "includes/blog_post_card.html" %}
+    </div>
+    {% endfor %}
+    {% elif q %}
+    <div class="col">
+      <div class="alert alert-warning d-flex align-items-center row g-1 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-circle-fill col-2 col-md-1" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+        </svg>
+        <div class="col-10 col-md-11">No results found, please try something else.</div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col">
+      <div class="alert alert-info d-flex align-items-center row g-1 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle-fill col-2 col-md-1" viewBox="0 0 16 16">
+          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+        </svg>
+        <div class="col-10 col-md-11">Submit a query above to see some results.</div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if random_posts %}
+    <div class="container mt-5 d-print-none">
+      <div class="row">
+        <div class="col">
+          <div class="text-muted">
+            Random Posts
+          </div>
+          <p>If you don't know what to search for check out some of these posts.</p>
+        </div>
+      </div>
+      <div class="row">
+        {% for blog_post in random_posts %}
+        <div class="col-12 col-sm-6 col-md-4 mb-5">
+          {% include "includes/blog_post_card.html" %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

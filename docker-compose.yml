@@ -1,27 +1,9 @@
 services:
-  email:
-    container_name: blog_email
-    image: overshard/exim
-    restart: unless-stopped
   web:
-    container_name: blog_web
+    container_name: blog
     build: .
     env_file: .env
-    volumes:
-      - /srv/data/blog/:/data/
     ports:
       - "127.0.0.1:${PORT}:${PORT}"
-    command: >
-      gunicorn blog.asgi:application --preload --workers 2 --max-requests 256
-      --timeout 30 --bind :${PORT} --worker-class uvicorn.workers.UvicornWorker
-      --error-logfile - --access-logfile -
-    restart: unless-stopped
-  worker:
-    container_name: blog_worker
-    build: .
-    env_file: .env
-    volumes:
-      - /srv/data/blog/:/data/
-    command: >
-      python3 manage.py scheduler
+    command: uv run gunicorn -b 0.0.0.0:${PORT} -w 2 app:app
     restart: unless-stopped

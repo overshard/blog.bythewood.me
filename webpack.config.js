@@ -7,13 +7,10 @@ const BASE_DIR = __dirname;
 
 module.exports = {
   entry: {
-    "admin.global": "./admin/static_src/global/index.js",
-    "admin.editor": "./admin/static_src/editor/index.js",
-    base: "./blog/static_src/index.js",
-    pages: "./pages/static_src/index.js",
+    base: "./static_src/index.js",
   },
   output: {
-    path: path.resolve(BASE_DIR, "blog/static"),
+    path: path.resolve(BASE_DIR, "static"),
     filename: "[name].js",
   },
   optimization: {
@@ -30,7 +27,6 @@ module.exports = {
   ],
   module: {
     rules: [
-      // Extract all CSS into their own files
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
@@ -39,7 +35,6 @@ module.exports = {
         test: /\.scss$/,
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
-      // Copy all images to the build directory
       {
         test: /\.(png|jpg|gif|svg|webp)$/,
         use: [

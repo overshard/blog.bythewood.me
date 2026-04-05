@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+{% block extra_head %}
+{% include "includes/social.html" %}
+{% endblock %}
+
+
+{% block breadcrumb_wrapper %}{% endblock %}
+
+
+{% block main %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-sm-6">
+      <h1 class="mb-3 fw-bolder">{{ page.title }}</h1>
+    </div>
+    <div class="col-sm-6">
+      {% include 'includes/search_form.html' %}
+    </div>
+  </div>
+</div>
+
+{% set blog_post = latest_post %}
+{% include "includes/blog_post_latest.html" %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col">
+      <div class="text-muted">
+        Random posts
+      </div>
+      <p>If you don't know what you're looking for check out some of my older posts.</p>
+    </div>
+  </div>
+  <div class="row d-flex flex-nowrap overflow-auto w-100">
+    {% for blog_post in random_blog_posts %}
+    <div class="col-10 col-sm-7 col-md-5 col-lg-4">
+      {% include "includes/blog_post_card.html" %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

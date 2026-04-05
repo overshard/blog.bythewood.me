@@ -1,20 +1,10 @@
 [project]
 name = "blog"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
-    "django",
-    "gunicorn",
-    "tzdata",
-    "uvicorn",
-    "wagtail",
-    "wagtail-modeladmin>=2.2.0",
-    "whitenoise",
-]
-
-[dependency-groups]
-dev = [
-    "black",
-    "flake8",
-    "isort",
+    "flask>=3.1",
+    "gunicorn>=23.0",
+    "mistune>=3.1",
+    "weasyprint>=68.1",
 ]

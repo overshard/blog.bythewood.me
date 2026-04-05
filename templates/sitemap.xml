@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{{ request.url_root }}</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>{{ request.url_root }}blog/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  {% for post in posts %}
+  <url>
+    <loc>{{ request.url_root }}blog/{{ post.slug }}/</loc>
+    <lastmod>{{ post.date }}</lastmod>
+    <changefreq>yearly</changefreq>
+  </url>
+  {% endfor %}
+  {% for tag in tags %}
+  <url>
+    <loc>{{ request.url_root }}blog/tag/{{ tag.slug }}/</loc>
+    {% if tag_lastmod[tag.slug] %}
+    <lastmod>{{ tag_lastmod[tag.slug] }}</lastmod>
+    {% endif %}
+    <changefreq>monthly</changefreq>
+  </url>
+  {% endfor %}
+  {% for year in years %}
+  <url>
+    <loc>{{ request.url_root }}blog/year/{{ year }}/</loc>
+    {% if year_lastmod[year] %}
+    <lastmod>{{ year_lastmod[year] }}</lastmod>
+    {% endif %}
+    <changefreq>yearly</changefreq>
+  </url>
+  {% endfor %}
+</urlset>

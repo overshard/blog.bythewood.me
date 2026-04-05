@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+
+{% block extra_head %}
+{% include "includes/social.html" %}
+{% endblock %}
+
+
+{% block main %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="mb-2">
+          {% for tag in post.tags %}
+          <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-secondary btn-sm rounded-pill py-0">
+            {{ tag|title }}
+          </a>
+          {% endfor %}
+        </div>
+        <div class="mb-2 d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stopwatch me-2" viewBox="0 0 16 16">
+            <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
+            <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64a.715.715 0 0 1 .012-.013l.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354a.512.512 0 0 1-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5zM8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3z"/>
+          </svg>
+          <span>{{ post.read_time }} min read</span>
+        </div>
+      </div>
+      <h1 class="fw-bolder">{{ post.title }}</h1>
+      <p class="h5 text-muted">{{ post.description }}</p>
+    </div>
+    <div class="d-none d-md-block col-md-4 col-lg-6 text-end">
+      <a href="{{ url_for('blog_post_pdf', slug=post.slug) }}" target="_blank" class="btn btn-link btn-sm d-print-none" aria-label="Download PDF">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-filetype-pdf" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% if post.cover_image %}
+<div class="container mt-5">
+  <img
+    src="{{ url_for('content_images', filename=post.cover_image) }}"
+    class="img-fluid rounded"
+    alt="{{ post.title }}"
+  >
+</div>
+{% endif %}
+
+<div class="container">
+  <div class="border-bottom border-3 py-3">
+    <div class="text-muted small mb-2">Author</div>
+    <div class="d-flex justify-content-between">
+      <div class="d-flex align-items-center">
+        <img class="rounded-circle me-3"
+          src="{{ url_for('content_images', filename='avatar.webp') }}"
+          alt="Isaac Bythewood"
+          width="40"
+          height="40">
+        <strong>
+          Isaac Bythewood
+        </strong>
+      </div>
+      <div class="d-flex align-items-center justify-content-end text-muted">
+        <div class="vr me-3 my-1"></div>
+        {{ post.date }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <article>
+    {{ post.body_html|safe }}
+    <hr class="mt-5" style="height: 3px; max-width: 600px; margin-left: auto; margin-right: auto;">
+  </article>
+</div>
+
+{% if related_posts %}
+<div class="container mt-5 d-print-none">
+  <div class="row">
+    <div class="col">
+      <div class="text-muted">
+        Related posts
+      </div>
+      <p>Some posts in similar tags to this one.</p>
+    </div>
+  </div>
+  <div class="row d-flex flex-nowrap overflow-auto w-100">
+    {% for blog_post in related_posts %}
+    <div class="col-10 col-sm-7 col-md-5 col-lg-4">
+      {% include "includes/blog_post_card.html" %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

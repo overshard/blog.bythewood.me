@@ -1,9 +1,0 @@
-{% if not settings.DEBUG and not request.user.is_authenticated %}
-<script>
-  (function(m,e,t,r,i,c,s){m.collectorQueue = m.collectorQueue || r;
-  m.collectorServer = c; m.collectorId = s; collectorScript = e.createElement(t);
-  collectorScript.src = c + i; e.head.appendChild(m.collectorScript);
-  })(window,document,'script',[],'/static/collector.js',
-  'https://analytics.bythewood.me','0d379e18-9ea7-4228-a8bf-82369c25ab84');
-</script>
-{% endif %}

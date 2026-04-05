@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0e3ff4"/>
+      <stop offset="100%" style="stop-color:#842bff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0d1117"/>
+  <rect x="80" y="80" width="5" height="160" fill="url(#accent)"/>
+  {% for line in title_lines %}
+  <text x="110" y="{{ 150 + loop.index0 * 64 }}" font-family="sans-serif" font-size="54" font-weight="bold" fill="#f0f6fc" letter-spacing="-0.01em">{{ line }}</text>
+  {% endfor %}
+  <line x1="80" y1="490" x2="1120" y2="490" stroke="#30363d" stroke-width="1"/>
+  <text x="80" y="548" font-family="sans-serif" font-size="28" fill="#c9d1d9">Isaac Bythewood</text>
+  {% if tags %}
+  {% for tag in tags[:4] %}
+  <rect x="{{ 1120 - (tags[:4]|length - loop.index0) * 140 }}" y="520" width="128" height="38" rx="19" fill="#21262d"/>
+  <text x="{{ 1120 - (tags[:4]|length - loop.index0) * 140 + 64 }}" y="545" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#c9d1d9">{{ tag }}</text>
+  {% endfor %}
+  {% endif %}
+</svg>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: {{ request.url_root }}sitemap.xml

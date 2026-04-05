@@ -1,0 +1,42 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col">
+      <div class="text-muted">Latest post</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-5 pb-5 border-bottom">
+      <a href="{{ url_for('blog_post', slug=blog_post.slug) }}" class="text-decoration-none text-dark">
+        <h2 class="fw-bolder">{{ blog_post.title }}</h2>
+      </a>
+      <div class="mb-3">
+        {% for tag in blog_post.tags %}
+          <a href="{{ url_for('blog_tag', tag=tag) }}" class="btn btn-light btn-sm rounded-pill fw-bold py-0">
+            {{ tag|title }}
+          </a>
+        {% endfor %}
+      </div>
+      <p class="h5 text-muted mb-3">{{ blog_post.description }}</p>
+      <div class="d-flex align-items-center">
+        <img class="rounded-circle me-3" src="{{ url_for('content_images', filename='avatar.webp') }}" alt="Isaac Bythewood" width="35" height="35">
+        <strong class="me-2">
+          Isaac Bythewood
+        </strong>
+        <div class="d-inline text-muted">
+          {{ blog_post.date }}
+        </div>
+      </div>
+    </div>
+    {% if blog_post.cover_image %}
+    <div class="col-12 col-md-6 col-lg-7 pb-5 border-bottom">
+      <a href="{{ url_for('blog_post', slug=blog_post.slug) }}">
+        <img
+          src="{{ url_for('content_images', filename=blog_post.cover_image) }}"
+          class="img-fluid rounded"
+          alt="{{ blog_post.title }}"
+        >
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
