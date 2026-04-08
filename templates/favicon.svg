@@ -1,5 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="white" viewBox="0 0 16 16">
-  <rect x="0" y="0" width="16" height="16" fill="black" rx="2"/>
-  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-  <path d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 16 16">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="rgb(14, 63, 180)"/>
+      <stop offset="100%" stop-color="rgb(107, 158, 120)"/>
+    </linearGradient>
+  </defs>
+  <rect width="16" height="16" rx="2" fill="url(#g)"/>
+  <text x="8" y="11.5" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="9" fill="rgba(255,255,255,0.9)">
+    &gt;_
+  </text>
 </svg>

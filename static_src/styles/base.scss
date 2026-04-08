@@ -11,7 +11,9 @@ body {
 
 .logo {
   content: "";
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-image: linear-gradient(
     135deg,
     rgb(14, 63, 180) 0%,
@@ -23,6 +25,22 @@ body {
   margin-bottom: auto;
   border-radius: 3px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  text-decoration: none !important;
+
+  &::after {
+    content: ">_";
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  &[style*="width: 20px"]::after {
+    font-size: 8px;
+  }
 
   &:hover {
     transform: rotate(12deg) scale(1.08);
