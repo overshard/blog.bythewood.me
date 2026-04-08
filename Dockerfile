@@ -4,6 +4,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY --from=oven/bun:alpine /usr/local/bin/bun /usr/local/bin/bun
 
 RUN apk add --update --no-cache \
+      libstdc++ libgcc \
       pango fontconfig font-noto font-jetbrains-mono
 
 WORKDIR /app
