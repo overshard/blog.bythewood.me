@@ -1,6 +1,6 @@
 # Blog
 
-A self-hostable blog built on Wagtail for developers.
+A self-hostable blog built on Flask for developers.
 
 
 ## Motivation
@@ -12,13 +12,10 @@ I was bored and felt like writing my own blog over the weekend.
 
 - Top notch SEO using industry best practices and multiple scanners to detect
   issues on a regular basis.
-- Built on Wagtail and Django, powering some of the largest websites in the
-  world. Wagtail is used by Google, NASA, MIT, Mozilla, and many others.
-- Customized for developers, makes use of CodeMirror for syntax highlighting and
-  on the admin panel for a clean code editing experience.
-- Easily adjusted to fit your needs with the use of well documented projects
-  like the above mentioned Wagtail and Django plus Bootstrap for the design and
-  easy to adjust hosting options using Docker.
+- Built on Flask with markdown files for content, no database required.
+- Customized for developers, makes use of CodeMirror for syntax highlighting.
+- Easily adjusted to fit your needs with Bootstrap for the design and easy to
+  adjust hosting options using Docker.
 - Minimal network payloads, out of the box 100% scores on all lighthouse metrics
   and most pages, even with a few images, are less than 300kB in size.
 
@@ -33,39 +30,31 @@ If you want to install things without docker then you'll need the following
 dependencies:
 
 - python
-- pipenv
-- node
-- yarn
-- chromium
+- uv
+- bun
 
 You can also check the `Dockerfile` for an exact list of dependencies and adjust
 package names for your desired platform.
-
-This is a standard Django project. If you know how to run Django, or want to
-look up any Django tutorial on how to run Django, you shouldn't have a problem
-getting this project running on almost anything.
 
 
 ## Running locally
 
 If you have all of the above dependencies installed you can use my Makefile to
-run and install python and node dependencies locally. Running `make` will check
-that you have the proper dependencies installed and if not it will try and
-install them for you. It will then create you a fresh database and run
-everything.
+run and install python and node dependencies locally. Running `make run` will
+start both the Vite watcher and the Flask dev server.
 
 
 ## Checking outdated dependencies
 
-This can be done in both yarn and pipenv with the following two commands:
+This can be done in both bun and uv with the following two commands:
 
-    pipenv update --outdated
-    yarn outdated
+    uv lock --upgrade --dry-run
+    bun outdated
 
 You can then upgrade the outdated dependencies with the following two commands:
 
-    pipenv update
-    yarn upgrade
+    uv lock --upgrade
+    bun update
 
 I recommend testing everything after this to make sure it's all working.
 
@@ -82,26 +71,16 @@ Google with `apt install webp`.
 
 The easiest way to run this project is to run it using
 `docker-compose up --build -d` if you have `docker-compose` and `docker`
-installed. This will start the server and have you running at port 8000. The
-first time you do this make sure you run migrations with
-`docker-compose run web python manage.py migrate`. Make sure you setup the
-`.env` file before running, you can copy the sample from
+installed. This will start the server and have you running at port 8000. Make
+sure you setup the `.env` file before running, you can copy the sample from
 `samplefiles/env.sample` into the root of the project as `.env` and change the
 variables.
 
 
-## Default user
-
-The default user is `admin` with the password `admin`.
-
-
 ## Backups
 
-All data is stored in `/srv/data/blog.bythewood.me/` and your repo is stored in
-`/srv/git/blog.bythewood.me.git/`. You can backup both of these folders and you'll have
-a 100% backup of everything except changes you may have made to the `Caddyfile`
-and the `.env` file which should be easy enough to recreate but you can back
-those up too!
+All data is stored in the repo itself (markdown files in `content/posts/` and
+images in `content/images/`). Back up the repo and you have everything.
 
 
 ## Support
@@ -155,6 +134,5 @@ Server:
     cp samplefiles/Caddyfile.sample /etc/caddy/Caddyfile && sed -i 's/blog.example.com/blog.bythewood.me/g' /etc/caddy/Caddyfile
     cp samplefiles/env.sample .env && sed -i 's/blog.example.com/blog.bythewood.me/g' .env
     cp samplefiles/post-receive.sample /srv/git/blog.bythewood.me.git/hooks/post-receive
-    mkdir -p /srv/data/blog.bythewood.me/db && chown -R 1000:1000 /srv/data/blog.bythewood.me
-    docker-compose up --build --detach && docker-compose run web python3 manage.py migrate --noinput && docker-compose run web sqlite3 db.sqlite3 "PRAGMA journal_mode=WAL;" ".exit"
+    docker-compose up --build --detach
     rc-update add caddy boot && service caddy start

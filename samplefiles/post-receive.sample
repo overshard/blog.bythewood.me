@@ -13,7 +13,6 @@ while read oldrev newrev ref; do
     cd /srv/docker/blog.bythewood.me
     git pull
     docker-compose up --build --detach
-    docker-compose run web python3 manage.py migrate --noinput
     docker system prune --force
     END_TIME=`date +%s`
     echo Total build time: `expr $END_TIME - $START_TIME`s
