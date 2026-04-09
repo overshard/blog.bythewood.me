@@ -10,7 +10,7 @@
 
   {% block extra_head %}{% endblock %}
 
-  <link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
+  <link href="{{ vite_asset('index.js', 'css') }}" rel="stylesheet">
   {% block extra_css %}{% endblock %}
 
   {% include 'includes/collector.html' %}
@@ -122,7 +122,7 @@
   </div>
   {% endblock %}
 
-  <script src="{{ url_for('static', filename='base.js') }}"></script>
+  <script src="{{ vite_asset('index.js') }}"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -5,6 +5,7 @@ A simple Flask blog powered by markdown files.
 """
 
 import html
+import json
 import math
 import os
 import random
@@ -24,8 +25,33 @@ from flask import (
 from weasyprint import HTML
 
 app = Flask(__name__)
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000
 
 CONTENT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "content")
+MANIFEST_PATH = os.path.join(app.static_folder, ".vite", "manifest.json")
+
+_manifest_cache = None
+
+
+def get_vite_manifest():
+    global _manifest_cache
+    if _manifest_cache is None or app.debug:
+        with open(MANIFEST_PATH) as f:
+            _manifest_cache = json.load(f)
+    return _manifest_cache
+
+
+def vite_asset(entry, kind="file"):
+    manifest = get_vite_manifest()
+    chunk = manifest.get(entry)
+    if chunk:
+        if kind == "css" and "css" in chunk:
+            return "/static/" + chunk["css"][0]
+        return "/static/" + chunk["file"]
+    return url_for("static", filename=entry)
+
+
+app.jinja_env.globals["vite_asset"] = vite_asset
 
 
 # -- Markdown rendering -------------------------------------------------------
