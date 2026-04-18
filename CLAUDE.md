@@ -18,7 +18,7 @@ There are no tests or linters configured.
 
 **Backend:** Single-file Flask app (`app.py`). Posts are loaded from `content/posts/*.md` at startup (reloaded per-request in debug mode). Each post has frontmatter fields: title, slug, date, publish_date, tags, description, cover_image. Posts with `publish_date` in the future are hidden.
 
-**Frontend pipeline:** Vite builds `static_src/` → `static/`. Entry point is `static_src/index.js` which imports SCSS and JS. Output is `static/base.css` and `static/base.js`. Uses Bootstrap 5, CodeMirror (syntax highlighting in posts), and Monaspace Argon font.
+**Frontend pipeline:** Vite builds `static_src/` → `static/`. Entry point is `static_src/index.js` which imports SCSS and JS. Output filenames are content-hashed (`base-[hash].js`, `base-[hash].css`) and a Vite manifest (`static/.vite/manifest.json`) is read at runtime so templates can resolve the hashed names for cache busting. Uses Bootstrap 5, CodeMirror (syntax highlighting in posts), and Monaspace Argon font.
 
 **Templates:** Jinja2 templates in `templates/`. `base.html` is the layout. Blog post content is rendered through a custom `BlogRenderer` (Mistune) that wraps blocks in `div.block-*` classes. A separate `PDFRenderer` exists for the PDF export route.
 
