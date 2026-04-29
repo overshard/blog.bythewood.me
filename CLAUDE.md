@@ -32,8 +32,9 @@ There are no tests or linters configured.
 
 ## Key Routes
 
-- `/blog/<slug>/` — single post
-- `/blog/<slug>/pdf/` — PDF export via WeasyPrint
-- `/blog/<slug>/md/` — raw markdown download
+- `/posts/<slug>/` — single post (old `/blog/<slug>/` 301-redirects here)
+- `/posts/<slug>/pdf/` — PDF export via WeasyPrint
+- `/posts/<slug>/md/` — raw markdown download
+- `/blog/` — post index (also `/blog/tag/<tag>/` and `/blog/year/<year>/`)
 - `/search/live/` — JSON endpoint for live search
 - `/og/<slug>.svg` — dynamic OG image generation

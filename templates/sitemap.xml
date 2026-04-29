@@ -10,7 +10,7 @@
   </url>
   {% for post in posts %}
   <url>
-    <loc>{{ request.url_root }}blog/{{ post.slug }}/</loc>
+    <loc>{{ request.url_root }}posts/{{ post.slug }}/</loc>
     <lastmod>{{ post.date }}</lastmod>
     <changefreq>yearly</changefreq>
   </url>

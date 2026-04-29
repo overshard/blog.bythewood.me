@@ -17,6 +17,7 @@ from flask import (
     Response,
     abort,
     jsonify,
+    redirect,
     render_template,
     request,
     send_from_directory,
@@ -280,7 +281,7 @@ def blog_index():
     )
 
 
-@app.route("/blog/<slug>/")
+@app.route("/posts/<slug>/")
 def blog_post(slug):
     post = POSTS_BY_SLUG.get(slug)
     if not post or post["publish_date"] > date.today().isoformat():
@@ -298,7 +299,7 @@ def blog_post(slug):
     )
 
 
-@app.route("/blog/<slug>/pdf/")
+@app.route("/posts/<slug>/pdf/")
 def blog_post_pdf(slug):
     post = POSTS_BY_SLUG.get(slug)
     if not post or post["publish_date"] > date.today().isoformat():
@@ -315,7 +316,7 @@ def blog_post_pdf(slug):
     )
 
 
-@app.route("/blog/<slug>/md/")
+@app.route("/posts/<slug>/md/")
 def blog_post_md(slug):
     post = POSTS_BY_SLUG.get(slug)
     if not post or post["publish_date"] > date.today().isoformat():
@@ -328,6 +329,21 @@ def blog_post_md(slug):
         mimetype="text/markdown",
         headers={"Content-Disposition": f'filename="{post["slug"]}.md"'},
     )
+
+
+@app.route("/blog/<slug>/")
+def blog_post_redirect(slug):
+    return redirect(url_for("blog_post", slug=slug), code=301)
+
+
+@app.route("/blog/<slug>/pdf/")
+def blog_post_pdf_redirect(slug):
+    return redirect(url_for("blog_post_pdf", slug=slug), code=301)
+
+
+@app.route("/blog/<slug>/md/")
+def blog_post_md_redirect(slug):
+    return redirect(url_for("blog_post_md", slug=slug), code=301)
 
 
 @app.route("/blog/tag/<tag>/")
