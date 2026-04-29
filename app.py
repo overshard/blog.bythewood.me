@@ -23,7 +23,9 @@ from flask import (
     send_from_directory,
     url_for,
 )
-from weasyprint import HTML
+from urllib.parse import unquote, urlparse
+
+from weasyprint import HTML, default_url_fetcher
 
 app = Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 31536000
@@ -299,6 +301,20 @@ def blog_post(slug):
     )
 
 
+def pdf_url_fetcher(url):
+    path = unquote(urlparse(url).path)
+    local_roots = {
+        "/content/images/": os.path.join(CONTENT_DIR, "images"),
+        "/static/": app.static_folder,
+    }
+    for prefix, root in local_roots.items():
+        if path.startswith(prefix):
+            file_path = os.path.join(root, path[len(prefix):])
+            if os.path.isfile(file_path):
+                return {"file_obj": open(file_path, "rb")}
+    return default_url_fetcher(url)
+
+
 @app.route("/posts/<slug>/pdf/")
 def blog_post_pdf(slug):
     post = POSTS_BY_SLUG.get(slug)
@@ -308,6 +324,7 @@ def blog_post_pdf(slug):
     pdf = HTML(
         string=html_content,
         base_url=request.url_root,
+        url_fetcher=pdf_url_fetcher,
     ).write_pdf()
     return Response(
         pdf,
