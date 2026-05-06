@@ -1,5 +1,5 @@
 use comrak::{
-    nodes::{AstNode, NodeValue},
+    nodes::{AstNode, NodeValue, TableAlignment},
     Arena, ComrakOptions,
 };
 use std::cell::RefCell;
@@ -8,6 +8,7 @@ use std::fmt::Write;
 fn options() -> ComrakOptions {
     let mut opts = ComrakOptions::default();
     opts.extension.strikethrough = true;
+    opts.extension.table = true;
     opts.render.unsafe_ = true;
     opts
 }
@@ -124,6 +125,39 @@ fn render_node<'a>(node: &'a AstNode<'a>, out: &mut String, opts: &ComrakOptions
         NodeValue::HtmlBlock(h) => {
             out.push_str(&h.literal);
         }
+        NodeValue::Table(t) => {
+            let alignments = &t.alignments;
+            out.push_str(
+                "<div class=\"block-rich-text\"><div class=\"table-responsive\"><table class=\"table\">",
+            );
+            let mut rows = node.children();
+            if let Some(header) = rows.next() {
+                out.push_str("<thead><tr>");
+                for (i, cell) in header.children().enumerate() {
+                    let style = align_style(alignments.get(i).copied());
+                    write!(out, "<th{style}>").ok();
+                    for child in cell.children() {
+                        render_inline(child, out, opts);
+                    }
+                    out.push_str("</th>");
+                }
+                out.push_str("</tr></thead>");
+            }
+            out.push_str("<tbody>");
+            for row in rows {
+                out.push_str("<tr>");
+                for (i, cell) in row.children().enumerate() {
+                    let style = align_style(alignments.get(i).copied());
+                    write!(out, "<td{style}>").ok();
+                    for child in cell.children() {
+                        render_inline(child, out, opts);
+                    }
+                    out.push_str("</td>");
+                }
+                out.push_str("</tr>");
+            }
+            out.push_str("</tbody></table></div></div>\n");
+        }
         _ => {
             // Fallback: emit raw HTML for unhandled block types via comrak
             let buf = RefCell::new(String::new());
@@ -133,6 +167,15 @@ fn render_node<'a>(node: &'a AstNode<'a>, out: &mut String, opts: &ComrakOptions
             }
             drop(buf);
         }
+    }
+}
+
+fn align_style(a: Option<TableAlignment>) -> &'static str {
+    match a {
+        Some(TableAlignment::Left) => " style=\"text-align:left\"",
+        Some(TableAlignment::Right) => " style=\"text-align:right\"",
+        Some(TableAlignment::Center) => " style=\"text-align:center\"",
+        _ => "",
     }
 }
 
