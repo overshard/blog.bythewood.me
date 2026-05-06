@@ -1,24 +1,38 @@
-FROM python:3.13-alpine
+# ----- builder -----
+FROM rust:alpine AS builder
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN apk add --no-cache musl-dev
+
 COPY --from=oven/bun:alpine /usr/local/bin/bun /usr/local/bin/bun
-
-RUN apk add --update --no-cache \
-      libstdc++ libgcc \
-      pango fontconfig font-noto font-jetbrains-mono
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock package.json bun.lock ./
-RUN bun install --frozen-lockfile && uv sync --frozen --no-dev
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+COPY frontend ./frontend
 
-COPY . .
+RUN cd frontend && bun install --frozen-lockfile && bun run build
+RUN cargo build --release
 
-ENV PATH="/app/.venv/bin:/app/node_modules/.bin:$PATH"
+# ----- runtime -----
+FROM alpine:3.23
 
-RUN bun run build
+RUN apk add --no-cache \
+    chromium font-jetbrains-mono ttf-dejavu
+
+WORKDIR /app
+
+COPY --from=builder /app/target/release/blog ./blog
+COPY --from=builder /app/dist ./dist
+COPY templates ./templates
+COPY content ./content
 
 RUN addgroup -S -g 1000 app && \
     adduser -S -h /app -s /sbin/nologin -u 1000 -G app app && \
     chown -R app:app /app
 USER app
+
+ENV PORT=8000
+EXPOSE 8000
+
+CMD ["./blog"]

@@ -1,13 +1,4 @@
-.env
-.git
-.gitignore
-.editorconfig
-.eslintrc
-.playwright-mcp
-__pycache__
-docker-compose.yml
-Dockerfile
-LICENSE.md
-README.md
-node_modules
-static
+/target
+/frontend/node_modules
+/.git
+/dist

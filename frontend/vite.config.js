@@ -5,7 +5,7 @@ export default defineConfig({
   root: "static_src",
   base: "/static/",
   build: {
-    outDir: resolve(__dirname, "static"),
+    outDir: resolve(__dirname, "../dist"),
     emptyOutDir: true,
     manifest: true,
     rollupOptions: {

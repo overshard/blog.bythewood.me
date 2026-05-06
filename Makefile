@@ -1,10 +1,36 @@
-.PHONY: run push build
+CARGO ?= $(HOME)/.cargo/bin/cargo
+PORT  ?= 8000
 
-run:
-	bun run dev & uv run flask --app app run --host 0.0.0.0 --port 8000 --debug
+.DEFAULT_GOAL := run
+.PHONY: run build start bench clean push
 
-build:
-	bun run build
+# Dev: Vite watch + cargo run concurrently. Both die on Ctrl+C.
+run: frontend/node_modules dist/.vite/manifest.json
+	@trap 'kill 0' EXIT INT TERM; \
+	(cd frontend && bun run dev) & \
+	PORT=$(PORT) $(CARGO) run
+
+# Production build (Vite assets + release binary)
+build: frontend/node_modules
+	cd frontend && bun run build
+	$(CARGO) build --release
+
+# Run the release binary (after `make build`)
+start:
+	PORT=$(PORT) ./target/release/blog
+
+bench:
+	bench/run.sh
+
+clean:
+	$(CARGO) clean
+	rm -rf dist frontend/node_modules
 
 push:
 	git remote | xargs -I R git push R master
+
+frontend/node_modules:
+	cd frontend && bun install
+
+dist/.vite/manifest.json: frontend/node_modules
+	cd frontend && bun run build
