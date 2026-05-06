@@ -2,6 +2,7 @@ services:
   web:
     container_name: blog.bythewood.me
     build: .
+    init: true
     env_file: .env
     ports:
       - "127.0.0.1:${PORT}:${PORT}"
