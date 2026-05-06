@@ -88,6 +88,17 @@ $list-group-active-bg: $green-dim;
 $list-group-active-border-color: rgba(107, 158, 120, 0.25);
 $list-group-active-color: $green-bright;
 
+// Tables — Bootstrap's $table-color defaults to var(--bs-emphasis-color) which
+// renders near-black on our dark body bg, hiding cell text until selected.
+$table-color: $body-color;
+$table-border-color: $border-color;
+$table-striped-color: $body-color;
+$table-striped-bg: rgba(221, 215, 205, 0.03);
+$table-active-color: $body-color;
+$table-active-bg: rgba(221, 215, 205, 0.06);
+$table-hover-color: $body-color;
+$table-hover-bg: rgba(221, 215, 205, 0.04);
+
 // Breadcrumbs
 $breadcrumb-active-color: #ddd7cd;
 $breadcrumb-divider-color: #665f56;
