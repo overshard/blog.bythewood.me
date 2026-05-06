@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # ----- builder -----
 FROM rust:alpine AS builder
 
@@ -12,7 +13,10 @@ COPY src ./src
 COPY frontend ./frontend
 
 RUN cd frontend && bun install --frozen-lockfile && bun run build
-RUN cargo build --release
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/app/target \
+    cargo build --release && \
+    cp target/release/blog /app/blog
 
 # ----- runtime -----
 FROM alpine:3.23
@@ -22,7 +26,7 @@ RUN apk add --no-cache \
 
 WORKDIR /app
 
-COPY --from=builder /app/target/release/blog ./blog
+COPY --from=builder /app/blog ./blog
 COPY --from=builder /app/dist ./dist
 COPY templates ./templates
 COPY content ./content
