@@ -16,7 +16,7 @@ pub struct Post {
     pub description: String,
     pub cover_image: String,
     pub body_html: String,
-    pub body_html_pdf: String,
+    pub body_typst: String,
     pub read_time: usize,
 }
 
@@ -75,7 +75,7 @@ pub fn load_posts(content_dir: &PathBuf) -> Vec<Post> {
         let date = meta.get("date").cloned().unwrap_or_default();
         let publish_date = meta.get("publish_date").cloned().unwrap_or_else(|| date.clone());
         let body_html = markdown::render_blog(body);
-        let body_html_pdf = markdown::render_pdf(body);
+        let body_typst = markdown::render_typst(body);
         let word_count = body.split_whitespace().count();
         let read_time = ((word_count as f64) / 200.0).ceil() as usize;
         let read_time = read_time.max(1);
@@ -95,7 +95,7 @@ pub fn load_posts(content_dir: &PathBuf) -> Vec<Post> {
             description: meta.get("description").cloned().unwrap_or_default(),
             cover_image: meta.get("cover_image").cloned().unwrap_or_default(),
             body_html,
-            body_html_pdf,
+            body_typst,
             read_time,
         });
     }
