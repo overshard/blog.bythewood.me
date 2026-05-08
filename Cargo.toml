@@ -23,6 +23,6 @@ typst-pdf = "0.14"
 typst-kit = { version = "0.14", default-features = false, features = ["fonts", "embed-fonts"] }
 
 [profile.release]
-lto = true
-codegen-units = 1
+# Skip LTO so release builds stay tractable on the 1-vCPU alpine VPS once
+# typst-library entered the dep tree. codegen-units defaults to 16.
 strip = true
