@@ -33,7 +33,7 @@ struct AppState {
     posts: Arc<Vec<Post>>,
     posts_by_slug: Arc<HashMap<String, usize>>,
     content_dir: PathBuf,
-    server_base: String,
+    pdf_renderer: Arc<pdf::PdfRenderer>,
 }
 
 #[tokio::main]
@@ -60,12 +60,14 @@ async fn main() {
         .and_then(|v| v.parse().ok())
         .unwrap_or(8000);
 
+    let pdf_renderer = Arc::new(pdf::PdfRenderer::new(project_root.clone()));
+
     let state = AppState {
         env: Arc::new(env),
         posts: Arc::new(posts),
         posts_by_slug: Arc::new(posts_by_slug),
         content_dir: content_dir.clone(),
-        server_base: format!("http://127.0.0.1:{port}"),
+        pdf_renderer,
     };
 
     let app = Router::new()
@@ -377,21 +379,18 @@ async fn blog_post(
 async fn blog_post_pdf(
     State(state): State<AppState>,
     AxumPath(slug): AxumPath<String>,
-    uri: Uri,
-    headers: HeaderMap,
 ) -> Result<Response, AppError> {
-    let request = build_request(&uri, &headers);
     let idx = state.posts_by_slug.get(&slug).copied().ok_or_else(AppError::not_found)?;
     let post = state.posts[idx].clone();
     if post.publish_date.as_str() > today().as_str() {
         return Err(AppError::not_found());
     }
-    let tmpl = state.env.get_template("blog_post_pdf.html")?;
-    let html = tmpl.render(context! { post => &post, request => &request })?;
-    let server_base = state.server_base.clone();
-    let pdf = tokio::task::spawn_blocking(move || pdf::html_to_pdf(&html, &server_base))
+    let source = build_typst_source(&post);
+    let renderer = state.pdf_renderer.clone();
+    let pdf = tokio::task::spawn_blocking(move || renderer.render(source))
         .await
-        .map_err(|e| AppError(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))??;
+        .map_err(|e| AppError(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+        .map_err(|e| AppError(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     let mut h = HeaderMap::new();
     h.insert(header::CONTENT_TYPE, "application/pdf".parse().unwrap());
     h.insert(
@@ -399,6 +398,43 @@ async fn blog_post_pdf(
         format!("filename=\"{}.pdf\"", post.slug).parse().unwrap(),
     );
     Ok((StatusCode::OK, h, Body::from(pdf)).into_response())
+}
+
+fn build_typst_source(post: &Post) -> String {
+    use std::fmt::Write;
+    let q = markdown::typst_str_lit;
+    let mut s = String::with_capacity(post.body_typst.len() + 512);
+    s.push_str("#import \"/templates/blog_post.typ\": render\n");
+    s.push_str("#render(\n");
+    writeln!(s, "  title: \"{}\",", q(&post.title)).ok();
+    writeln!(s, "  date: \"{}\",", q(&post.date)).ok();
+    writeln!(s, "  read_time: {},", post.read_time).ok();
+    s.push_str("  tags: (");
+    for (i, t) in post.tags.iter().enumerate() {
+        if i > 0 {
+            s.push_str(", ");
+        }
+        write!(s, "\"{}\"", q(t)).ok();
+    }
+    if post.tags.len() == 1 {
+        s.push(',');
+    }
+    s.push_str("),\n");
+    writeln!(s, "  description: \"{}\",", q(&post.description)).ok();
+    if post.cover_image.is_empty() {
+        s.push_str("  cover_image: none,\n");
+    } else {
+        writeln!(
+            s,
+            "  cover_image: \"/content/images/{}\",",
+            q(&post.cover_image)
+        )
+        .ok();
+    }
+    s.push_str("  body: [\n");
+    s.push_str(&post.body_typst);
+    s.push_str("\n  ],\n)\n");
+    s
 }
 
 async fn blog_post_md(

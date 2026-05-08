@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A personal blog (blog.bythewood.me) built as a Rust axum app that renders markdown files. No database — blog posts are `.md` files in `content/posts/` with YAML frontmatter. Uses headless Chromium for PDF export and comrak for markdown rendering.
+A personal blog (blog.bythewood.me) built as a Rust axum app that renders markdown files. No database — blog posts are `.md` files in `content/posts/` with YAML frontmatter. Uses Typst (embedded as a library) for PDF export and comrak for markdown rendering.
 
 This is a Rust port of the original Flask version (now deleted). Performance: ~30-50x lower memory, ~10-20x higher RPS, sub-millisecond per-request latency in release mode.
 
@@ -26,7 +26,7 @@ There are no tests or linters configured.
 
 **Templates:** Jinja2 templates in `templates/` rendered by minijinja (Jinja2-faithful Rust engine by Armin Ronacher). `base.html` is the layout. Markdown post content is rendered through comrak with a custom renderer (`src/markdown.rs`) that wraps blocks in `div.block-*` classes — mirrors the original Mistune renderer pattern.
 
-**PDF generation:** `src/pdf.rs` spawns chrome-headless-shell with `--print-to-pdf` against a temp `.html` file (the `.html` suffix matters — without it Chromium renders the HTML as plain text). Chromium binary is located via env var `CHROMIUM_BIN`, then PATH search, then a `/opt/playwright-browsers/` glob fallback.
+**PDF generation:** `src/pdf.rs` embeds the Typst compiler (`typst` + `typst-pdf`) as a library — no Chromium subprocess. At startup `PdfRenderer::new` runs `typst-kit`'s font searcher to discover system fonts (and bundle a few embedded ones via the `embed-fonts` feature). Per request: comrak walks the post's markdown AST to a Typst markup string (`markdown::render_typst`), `main.rs::build_typst_source` wraps it in a `#import "/templates/blog_post.typ": render` + `#render(title: ..., body: [...])` invocation, and `PdfRenderer::render` compiles that source to a `PagedDocument` then calls `typst_pdf::pdf` for the bytes. The `World` impl resolves absolute paths against the project root, so `image("/content/images/foo.webp")` reads `content/images/foo.webp` from disk.
 
 **Manifest reload:** `templates.rs::build_env` re-reads `dist/.vite/manifest.json` per `vite_asset()` call in debug builds (so Vite watcher rebuilds are picked up immediately). Release builds load it once at startup. Gated on `cfg(debug_assertions)`.
 
@@ -45,7 +45,7 @@ blog.bythewood.me/
 │   ├── posts.rs      # frontmatter + post loading
 │   ├── markdown.rs   # comrak custom renderer
 │   ├── templates.rs  # minijinja env, url_for, vite_asset, Jinja2-compat formatter
-│   └── pdf.rs        # chrome-headless-shell subprocess
+│   └── pdf.rs        # typst World + render entry point
 ├── templates/                    # jinja2 source (minijinja-compatible)
 ├── content/                      # markdown source (posts + images)
 ├── frontend/                     # JS pipeline (package.json, vite.config.js, static_src/, node_modules/)
@@ -60,12 +60,12 @@ The binary reads `templates/`, `dist/`, and `content/` from the current working 
 
 - **Rust deps:** managed with `cargo` (see `Cargo.toml`, `Cargo.lock`)
 - **JS deps:** managed with `bun`, run from `frontend/` (see `frontend/package.json`, `frontend/bun.lock`)
-- **Production:** Docker (Alpine-based multi-stage, `rust:alpine` builder + `alpine:3.23` runtime), deployed via `docker-compose`. Runtime image installs `chromium` for PDF generation.
+- **Production:** Docker (Alpine-based multi-stage, `rust:alpine` builder + `alpine:3.23` runtime), deployed via `docker-compose`. Runtime image installs `font-jetbrains-mono`, `ttf-dejavu`, `ttf-liberation`, and `fontconfig` so the embedded Typst renderer can find a body sans, mono, and fallback fonts.
 
 ## Key Routes
 
 - `/posts/<slug>/` — single post (old `/blog/<slug>/` 301-redirects here)
-- `/posts/<slug>/pdf/` — PDF export via chrome-headless-shell
+- `/posts/<slug>/pdf/` — PDF export via embedded Typst (template at `templates/blog_post.typ`)
 - `/posts/<slug>/md/` — raw markdown download
 - `/blog/` — post index (also `/blog/tag/<tag>/` and `/blog/year/<year>/`)
 - `/search/?q=...` — server-rendered search page

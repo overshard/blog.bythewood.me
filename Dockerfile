@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 FROM alpine:3.23
 
 RUN apk add --no-cache \
-    chromium font-jetbrains-mono ttf-dejavu
+    font-jetbrains-mono ttf-dejavu ttf-liberation fontconfig
 
 WORKDIR /app
 
