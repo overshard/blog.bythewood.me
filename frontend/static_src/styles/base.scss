@@ -53,6 +53,14 @@ body {
 .navbar {
   border-bottom: 1px solid rgba(107, 158, 120, 0.06);
 
+  .navbar-toggler {
+    color: rgba(221, 215, 205, 0.7);
+    padding: 0.35rem 0.55rem;
+    font-size: 1rem;
+
+    &:focus { box-shadow: none; }
+  }
+
   .nav-link {
     font-size: 0.82rem;
     font-weight: 500;
@@ -78,6 +86,45 @@ body {
     &:hover::after,
     &.active::after {
       transform: scaleX(1);
+    }
+  }
+
+  // ── Mobile (under 768px): stacked drawer ──
+  // The blog navbar shows tag links (ai, coding, databases, …); on phones
+  // they need to stack as a clean drawer beneath the brand row, not float
+  // dim-on-dim into the page content. Top-rule separator, full-width tap
+  // targets, left accent for active.
+  @media (max-width: 767.98px) {
+    .navbar-collapse {
+      width: 100%;
+      border-top: 1px solid rgba(107, 158, 120, 0.08);
+      margin-top: 0.5rem;
+      padding: 0.4rem 0 0.6rem;
+    }
+
+    .navbar-nav {
+      margin-left: 0 !important;
+      width: 100%;
+    }
+
+    .nav-link {
+      padding: 0.65rem 0.75rem !important;
+      border-left: 2px solid transparent;
+      border-radius: 2px;
+      transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+
+      &::after { display: none; }
+
+      &:hover {
+        background: rgba(221, 215, 205, 0.04);
+        color: #ddd7cd;
+      }
+
+      &.active {
+        color: #ddd7cd;
+        border-left-color: #6b9e78;
+        background: rgba(107, 158, 120, 0.08);
+      }
     }
   }
 }
