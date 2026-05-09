@@ -23,8 +23,7 @@ bench:
 	bench/run.sh
 
 clean:
-	$(CARGO) clean
-	rm -rf dist frontend/node_modules
+	rm -rf target dist frontend/node_modules
 
 push:
 	git remote | xargs -I R git push R master
