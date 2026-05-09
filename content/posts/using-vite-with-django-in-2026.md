@@ -88,7 +88,7 @@ MIDDLEWARE = [
 ]
 ```
 
-`STATICFILES_DIRS` points at Vite's output directory so `collectstatic` and the dev server pick it up. `CompressedManifestStaticFilesStorage` hashes every file during `collectstatic` and rewrites references in CSS to point at the hashed names. Don't append `?v=...` query strings to `{% static %}` — WhiteNoise expects to control the URLs and the manifest will get out of sync.
+`STATICFILES_DIRS` points at Vite's output directory so `collectstatic` and the dev server pick it up. `CompressedManifestStaticFilesStorage` hashes every file during `collectstatic` and rewrites references in CSS to point at the hashed names. Don't append `?v=...` query strings to `{% static %}`. WhiteNoise expects to control the URLs and the manifest will get out of sync.
 
 Templates stay boring:
 
