@@ -1,9 +1,11 @@
+use chrono::Local;
 use serde::Serialize;
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fs;
 use std::path::PathBuf;
 
 use crate::markdown;
+use crate::pdf;
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Post {
@@ -74,8 +76,8 @@ pub fn load_posts(content_dir: &PathBuf) -> Vec<Post> {
             .unwrap_or_default();
         let date = meta.get("date").cloned().unwrap_or_default();
         let publish_date = meta.get("publish_date").cloned().unwrap_or_else(|| date.clone());
-        let body_html = markdown::render_blog(body);
-        let body_typst = markdown::render_typst(body);
+        let body_html = markdown::render(body);
+        let body_typst = pdf::typst_from_markdown(body);
         let word_count = body.split_whitespace().count();
         let read_time = ((word_count as f64) / 200.0).ceil() as usize;
         let read_time = read_time.max(1);
@@ -101,4 +103,91 @@ pub fn load_posts(content_dir: &PathBuf) -> Vec<Post> {
     }
     posts.sort_by(|a, b| b.date.cmp(&a.date));
     posts
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TagEntry {
+    pub name: String,
+    pub slug: String,
+    pub count: usize,
+    pub url: String,
+}
+
+pub fn today() -> String {
+    Local::now().date_naive().format("%Y-%m-%d").to_string()
+}
+
+pub fn is_published(post: &Post) -> bool {
+    post.publish_date.as_str() <= today().as_str()
+}
+
+pub fn published(posts: &[Post]) -> Vec<Post> {
+    posts.iter().filter(|p| is_published(p)).cloned().collect()
+}
+
+pub fn collect_tags(posts: &[Post]) -> Vec<TagEntry> {
+    let mut counts: BTreeMap<String, usize> = BTreeMap::new();
+    for p in posts {
+        for t in &p.tags {
+            *counts.entry(t.clone()).or_insert(0) += 1;
+        }
+    }
+    let mut out: Vec<TagEntry> = counts
+        .into_iter()
+        .map(|(name, count)| TagEntry {
+            url: format!("/blog/tag/{}/", urlencoding::encode(&name)),
+            slug: name.clone(),
+            name,
+            count,
+        })
+        .collect();
+    out.sort_by(|a, b| a.name.cmp(&b.name));
+    out
+}
+
+pub fn collect_years(posts: &[Post]) -> Vec<String> {
+    let mut years: Vec<String> = posts
+        .iter()
+        .filter(|p| !p.date.is_empty())
+        .map(|p| p.date[..4.min(p.date.len())].to_string())
+        .collect();
+    years.sort();
+    years.dedup();
+    years.reverse();
+    years
+}
+
+pub fn related(post: &Post, posts: &[Post], count: usize) -> Vec<Post> {
+    if post.tags.is_empty() {
+        return posts.iter().take(count).cloned().collect();
+    }
+    let post_tags: HashSet<&String> = post.tags.iter().collect();
+    let mut scored: Vec<(usize, &Post)> = posts
+        .iter()
+        .filter(|p| p.slug != post.slug)
+        .map(|p| {
+            let overlap = p.tags.iter().filter(|t| post_tags.contains(t)).count();
+            (overlap, p)
+        })
+        .filter(|(o, _)| *o > 0)
+        .collect();
+    scored.sort_by(|a, b| b.0.cmp(&a.0));
+    let mut out: Vec<Post> = scored
+        .into_iter()
+        .take(count)
+        .map(|(_, p)| p.clone())
+        .collect();
+    if out.len() < count {
+        let have: HashSet<String> = out.iter().map(|p| p.slug.clone()).collect();
+        for p in posts {
+            if p.slug == post.slug || have.contains(&p.slug) {
+                continue;
+            }
+            out.push(p.clone());
+            if out.len() >= count {
+                break;
+            }
+        }
+    }
+    out
 }
