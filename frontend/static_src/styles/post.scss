@@ -1,0 +1,118 @@
+// Styles the <article> body of a blog post. Comrak emits standard HTML
+// (<p>, <h2>, <pre><code>, <img>, etc.) — no custom block wrappers.
+
+article {
+  font-size: 1.05em;
+  line-height: 1.9;
+  color: #c4bdb2;
+
+  // Text content stays in a 600px reading column.
+  > p,
+  > ul,
+  > ol,
+  > blockquote,
+  > h1, > h2, > h3, > h4, > h5, > h6,
+  > hr {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // Code blocks, tables, and image-only paragraphs break wider.
+  > pre,
+  > table,
+  > p:has(> img:only-child) {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    color: #7db88c;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(125, 184, 140, 0.3);
+    transition: text-decoration-color 200ms ease;
+
+    &:hover {
+      text-decoration-color: #7db88c;
+    }
+  }
+
+  blockquote {
+    border-left: 2px solid rgba(201, 168, 76, 0.3);
+    padding-left: 1.25rem;
+    color: #a09890;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #ddd7cd;
+  }
+
+  strong {
+    color: #ddd7cd;
+  }
+
+  // Inline code (the `:not(pre)` rules out the <code> inside a <pre>).
+  :not(pre) > code {
+    background: rgba(107, 158, 120, 0.1);
+    color: #8dc49c;
+    padding: 0.15em 0.4em;
+    border-radius: 0.2rem;
+    font-size: 0.9em;
+  }
+
+  hr {
+    border-color: rgba(107, 158, 120, 0.08);
+  }
+
+  // Block-level code (background-color comes from the syntect inline style).
+  pre {
+    margin: 2rem auto;
+    padding: 1rem 1.25rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(107, 158, 120, 0.08);
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.5;
+
+    code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+      font-family: "Monaspace Argon", ui-monospace, monospace;
+    }
+  }
+
+  table {
+    width: 100%;
+    margin: 2rem auto;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(107, 158, 120, 0.08);
+    }
+
+    th {
+      color: #ddd7cd;
+      font-weight: 600;
+    }
+  }
+
+  img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 75vh;
+    height: auto;
+    border-radius: 0.25rem;
+  }
+
+  // Center an image-only paragraph and add vertical breathing room.
+  p:has(> img:only-child) {
+    margin: 2rem auto;
+    text-align: center;
+  }
+}
