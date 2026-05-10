@@ -1,6 +1,6 @@
 services:
   web:
-    container_name: blog.bythewood.me
+    container_name: blog
     build: .
     init: true
     restart: unless-stopped
